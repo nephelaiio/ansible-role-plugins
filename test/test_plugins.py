@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]),
 
 print(sys.path)
 
-from custom import reverse_record, filename, with_ext  # noqa: E402
+from custom import reverse_record, filename, with_ext, filter_network  # noqa: E402
 
 
 def record(host, address):
@@ -35,3 +35,13 @@ def test_with_ext():
     assert with_ext('basename.ext', 'newext') == 'basename.newext'
     assert with_ext('basename.ext1.ext2', 'newext') == 'basename.newext'
     assert with_ext('basename', 'newext') == 'basename.newext'
+
+
+def test_filter_network():
+    host = 'test.com'
+    address = '10.0.0.1'
+    r = record(host, address)
+    assert not filter_network(r)
+    assert not filter_network(r, '10.0.0.0/24')
+    assert not filter_network(r, '10.1.0.0/24')
+    assert filter_network(r, '10.0.0.0/24', 'ip-address') == r
