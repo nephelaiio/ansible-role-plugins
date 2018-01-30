@@ -1,6 +1,12 @@
 from jinja2.utils import soft_unicode
 
 
+def merge_dicts(x, y):
+    z = x.copy()
+    z.update(y)
+    return z
+
+
 def filename(basename):
     return (basename.split('.')[0])
 
@@ -52,6 +58,13 @@ def split_with(x, d):
     return(x.split(d))
 
 
+def alias_keys(d, alias={}):
+    new_dict = d
+    for k, v in alias.iteritems():
+        new_dict[v] = new_dict.pop(k)
+    return new_dict
+
+
 class FilterModule(object):
     ''' jinja2 filters '''
 
@@ -64,5 +77,6 @@ class FilterModule(object):
             'filename': filename,
             'map_format': map_format,
             'reverse_record': reverse_record,
-            'zone_fwd': zone_fwd
+            'zone_fwd': zone_fwd,
+            'alias_keys': alias_keys
         }

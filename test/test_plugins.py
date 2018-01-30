@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]),
 
 print(sys.path)
 
-from custom_filters import reverse_record, filename, with_ext  # noqa: E402
+from custom_filters import reverse_record, filename, with_ext, alias_keys  # noqa: E402
 from custom_tests import test_network  # noqa: E402
 
 
@@ -48,3 +48,11 @@ def test_test_network():
     assert not test_network(r, '10.0.0.0/24')
     assert not test_network(r, '10.1.0.0/24')
     assert test_network(r, '10.0.0.0/24', 'address') == r
+
+
+def test_alias_keys():
+    assert alias_keys({}, {}) == {}
+    assert alias_keys({'a': 1}, {'a': 'b'}) == {'b': 1}
+    assert alias_keys({'a': 1, 'b': 2},
+                      {'a': 'c', 'b': 'd'}) == {'c': 1, 'd': 2}
+    assert alias_keys({'a': 1}, {'a': 'b', 'b': 'c'}) == {'c': 1}
