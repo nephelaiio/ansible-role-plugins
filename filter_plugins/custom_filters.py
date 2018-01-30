@@ -1,5 +1,4 @@
 from jinja2.utils import soft_unicode
-from netaddr import IPAddress, IPNetwork
 
 
 def filename(basename):
@@ -53,12 +52,6 @@ def split_with(x, d):
     return(x.split(d))
 
 
-def filter_network(record, net='0.0.0.0/0', prop='ansible_host'):
-    if prop in record:
-        if IPAddress(record[prop]) in IPNetwork(net):
-            return record
-
-
 class FilterModule(object):
     ''' jinja2 filters '''
 
@@ -71,6 +64,5 @@ class FilterModule(object):
             'filename': filename,
             'map_format': map_format,
             'reverse_record': reverse_record,
-            'zone_fwd': zone_fwd,
-            'filter_network': filter_network
+            'zone_fwd': zone_fwd
         }
