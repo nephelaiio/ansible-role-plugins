@@ -71,5 +71,6 @@ class FilterModule(object):
             'filename': filename,
             'map_format': map_format,
             'reverse_record': reverse_record,
-            'zone_fwd': zone_fwd
+            'zone_fwd': zone_fwd,
+            'filter_network': filter_network
         }
