@@ -52,7 +52,8 @@ def test_test_network():
 
 def test_alias_keys():
     assert alias_keys({}, {}) == {}
-    assert alias_keys({'a': 1}, {'a': 'b'}) == {'b': 1}
+    assert alias_keys({'a': 1}, {'a': 'b'}) == {'a': 1, 'b': 1}
     assert alias_keys({'a': 1, 'b': 2},
-                      {'a': 'c', 'b': 'd'}) == {'c': 1, 'd': 2}
-    assert alias_keys({'a': 1}, {'a': 'b', 'b': 'c'}) == {'c': 1}
+                      {'a': 'c', 'b': 'd'}) == {'a': 1, 'b': 2, 'c': 1, 'd': 2}
+    assert alias_keys({'a': 1},
+                      {'a': 'b', 'b': 'c'}) == {'a': 1, 'b': 1, 'c': 1}
