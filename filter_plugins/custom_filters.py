@@ -61,7 +61,7 @@ def split_with(x, d):
 def alias_keys(d, alias={}):
     new_dict = d
     for k, v in alias.iteritems():
-        new_dict[v] = new_dict.pop(k)
+        new_dict[v] = new_dict[k]
     return new_dict
 
 
