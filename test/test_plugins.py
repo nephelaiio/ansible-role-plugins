@@ -8,8 +8,9 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]),
 
 print(sys.path)
 
-from custom_filters import reverse_record, filename, with_ext, alias_keys  # noqa: E402
-from custom_tests import test_network  # noqa: E402
+from custom_filters import reverse_record, filename, with_ext, \
+    alias_keys  # noqa: E402
+from custom_tests import test_network, test_property  # noqa: E402
 
 
 def test_reverse_record():
@@ -48,6 +49,18 @@ def test_test_network():
     assert not test_network(r, '10.0.0.0/24')
     assert not test_network(r, '10.1.0.0/24')
     assert test_network(r, '10.0.0.0/24', 'address') == r
+
+
+def test_test_property():
+    host = 'test.com'
+    address = '10.0.0.1'
+    r = {
+        'host': host,
+        'address': address
+    }
+    assert not test_property(r, '.*', 'none')
+    assert not test_property(r, 'nomatch', 'host')
+    assert test_property(r, '.*\.com', 'host') == r
 
 
 def test_alias_keys():
