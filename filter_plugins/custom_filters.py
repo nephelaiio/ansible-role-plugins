@@ -59,9 +59,17 @@ def split_with(x, d):
 
 
 def alias_keys(d, alias={}):
-    new_dict = d
+    new_dict = d.copy()
     for k, v in alias.iteritems():
         new_dict[v] = new_dict[k]
+    return new_dict
+
+
+def select_attributes(d, atts):
+    new_dict = {}
+    for k, v in d.iteritems():
+        if k in atts:
+            new_dict[k] = d[k]
     return new_dict
 
 
@@ -73,11 +81,10 @@ class FilterModule(object):
             'split_with': split_with,
             'head': head,
             'tail': tail,
-            'with_ext': with_ext,
-            'filename': filename,
             'map_format': map_format,
             'reverse_record': reverse_record,
             'zone_fwd': zone_fwd,
             'alias_keys': alias_keys,
-            'merge_dicts': merge_dicts
+            'merge_dicts': merge_dicts,
+            'select_attributes': select_attributes
         }
