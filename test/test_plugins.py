@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]),
 print(sys.path)
 
 from custom_filters import reverse_record, filename, with_ext, \
-    alias_keys  # noqa: E402
+    alias_keys, merge_dicts  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -70,3 +70,14 @@ def test_alias_keys():
                       {'a': 'c', 'b': 'd'}) == {'a': 1, 'b': 2, 'c': 1, 'd': 2}
     assert alias_keys({'a': 1},
                       {'a': 'b', 'b': 'c'}) == {'a': 1, 'b': 1, 'c': 1}
+
+
+def test_merge_dicts():
+    assert merge_dicts({}, {}) == {}
+    assert merge_dicts({'a': '0'}, {'a': '1'}) == {'a': '1'}
+    assert merge_dicts({'a': '0', 'b': '1'},
+                       {'a': '2', 'b': '3'}) == {'a': '2', 'b': '3'}
+    assert merge_dicts({'a': '0'},
+                       {'a': '1', 'b': '2'}) == {'a': '1', 'b': '2'}
+    assert merge_dicts({'a': '0', 'b': '1'},
+                       {'a': '2'}) == {'a': '2', 'b': '1'}

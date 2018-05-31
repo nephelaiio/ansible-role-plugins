@@ -78,5 +78,6 @@ class FilterModule(object):
             'map_format': map_format,
             'reverse_record': reverse_record,
             'zone_fwd': zone_fwd,
-            'alias_keys': alias_keys
+            'alias_keys': alias_keys,
+            'merge_dicts': merge_dicts
         }
