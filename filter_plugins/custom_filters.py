@@ -58,6 +58,10 @@ def split_with(x, d):
     return(x.split(d))
 
 
+def join_with(x, d):
+    return d.join(x)
+
+
 def alias_keys(d, alias={}):
     new_dict = d.copy()
     for k, v in alias.iteritems():
@@ -79,6 +83,7 @@ class FilterModule(object):
     def filters(self):
         return {
             'split_with': split_with,
+            'join_with': join_with,
             'head': head,
             'tail': tail,
             'map_format': map_format,
