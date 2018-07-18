@@ -1,4 +1,5 @@
 from jinja2.utils import soft_unicode
+import copy
 
 
 def merge_dicts(x, y):
@@ -63,7 +64,7 @@ def join_with(x, d):
 
 
 def alias_keys(d, alias={}):
-    new_dict = d.copy()
+    new_dict = copy.deepcopy(d)
     for k, v in alias.iteritems():
         new_dict[v] = new_dict[k]
     return new_dict
