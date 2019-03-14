@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]),
 print(sys.path)
 
 from custom_filters import reverse_record, filename, with_ext, \
-    alias_keys, merge_dicts, select_attributes  # noqa: E402
+    alias_keys, merge_dicts, merge_dicts_reverse, select_attributes  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -81,6 +81,16 @@ def test_merge_dicts():
                        {'a': '1', 'b': '2'}) == {'a': '1', 'b': '2'}
     assert merge_dicts({'a': '0', 'b': '1'},
                        {'a': '2'}) == {'a': '2', 'b': '1'}
+
+def test_merge_dicts_reverse():
+    assert merge_dicts_reverse({}, {}) == {}
+    assert merge_dicts_reverse({'a': '0'}, {'a': '1'}) == {'a': '0'}
+    assert merge_dicts_reverse({'a': '0', 'b': '1'},
+                               {'a': '2', 'b': '3'}) == {'a': '0', 'b': '1'}
+    assert merge_dicts_reverse({'a': '0'},
+                               {'a': '1', 'b': '2'}) == {'a': '0', 'b': '2'}
+    assert merge_dicts_reverse({'a': '0', 'b': '1'},
+                               {'a': '2'}) == {'a': '0', 'b': '1'}
 
 
 def test_select_attributes():

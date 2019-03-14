@@ -7,6 +7,9 @@ def merge_dicts(x, y):
     z.update(y)
     return z
 
+def merge_dicts_reverse(x, y):
+    return merge_dicts(y, x)
+
 
 def filename(basename):
     return (basename.split('.')[0])
