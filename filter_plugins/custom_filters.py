@@ -95,5 +95,6 @@ class FilterModule(object):
             'zone_fwd': zone_fwd,
             'alias_keys': alias_keys,
             'merge_dicts': merge_dicts,
-            'select_attributes': select_attributes
+            'select_attributes': select_attributes,
+            'merge_dicts_reverse': merge_dicts_reverse
         }
