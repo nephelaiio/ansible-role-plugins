@@ -60,7 +60,7 @@ def test_test_property():
     }
     assert not test_property(r, '.*', 'none')
     assert not test_property(r, 'nomatch', 'host')
-    assert test_property(r, '.*\.com', 'host') == r
+    assert test_property(r, '.*.com', 'host') == r
 
 
 def test_alias_keys():

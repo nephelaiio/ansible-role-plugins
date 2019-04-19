@@ -68,14 +68,14 @@ def join_with(x, d):
 
 def alias_keys(d, alias={}):
     new_dict = copy.deepcopy(d)
-    for k, v in alias.iteritems():
+    for k, v in list(alias.items()):
         new_dict[v] = new_dict[k]
     return new_dict
 
 
 def select_attributes(d, atts):
     new_dict = {}
-    for k, v in d.iteritems():
+    for k, v in list(d.items()):
         if k in atts:
             new_dict[k] = d[k]
     return new_dict
