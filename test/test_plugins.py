@@ -118,6 +118,16 @@ def test_drop_attributes():
     assert drop_attributes({'a': '0'}, ['c']) == {'a': '0'}
 
 
+def test_to_dict():
+    assert to_dict([['a', 'b']]) == {'a': 'b'}
+    assert to_dict({'a': 'b'}, 'c') == {'c': {'a': 'b'}}
+    assert to_dict(['a', 'b'], 'c') == {'c': ['a', 'b']}
+    assert to_dict('a', {'a': 'first', 'b': 'second'}) == {'a': 'first',
+                                                           'b': 'second'}
+    assert to_dict('a', {'a': 'first', 'b': '%s'}) == {'a': 'first',
+                                                       'b': 'a'}
+
+
 def test_map_format():
     assert map_format('', '%sx') == 'x'
     assert map_format('a', '%sx') == 'ax'

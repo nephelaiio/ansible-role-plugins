@@ -44,7 +44,8 @@ def map_format(value, pattern):
         ])
     else:
         assert False, \
-            f"unsupported argument types (#{type(value)}, #{type(pattern)})"
+            f"unsupported argument types (#{type(value)}, #{type(pattern)}) \
+            != (str, str) | (dict, dict) "
     return result
 
 
@@ -116,7 +117,12 @@ def to_dict(x, key=None):
     if key is None:
         result = dict(x)
     else:
-        result = {key: x}
+        if type(key) == str:
+            result = {key: x}
+        if is_hash(key):
+            result = dict([
+                [k, map_format(x, v)] for k, v in key.items()
+            ])
     return result
 
 
