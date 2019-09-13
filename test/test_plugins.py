@@ -9,7 +9,8 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]),
 print(sys.path)
 
 from custom_filters import reverse_record, filename, with_ext, \
-    alias_keys, merge_dicts, merge_dicts_reverse, select_attributes  # noqa: E402
+    alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
+    map_format, map_format_attr  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -82,6 +83,7 @@ def test_merge_dicts():
     assert merge_dicts({'a': '0', 'b': '1'},
                        {'a': '2'}) == {'a': '2', 'b': '1'}
 
+
 def test_merge_dicts_reverse():
     assert merge_dicts_reverse({}, {}) == {}
     assert merge_dicts_reverse({'a': '0'}, {'a': '1'}) == {'a': '0'}
@@ -99,3 +101,30 @@ def test_select_attributes():
     assert select_attributes({'a': '0', 'b': '1'},
                              ['a', 'b']) == {'a': '0', 'b': '1'}
     assert select_attributes({'a': '0'}, ['a', 'b']) == {'a': '0'}
+
+
+def test_map_format():
+    assert map_format('', '%sx') == 'x'
+    assert map_format('a', '%sx') == 'ax'
+    assert map_format('a', 'x%s') == 'xa'
+    assert map_format('a', '%s') == 'a'
+    assert map_format('a', '') == ''
+
+
+def test_map_format_attr():
+    d = {
+        'a': 'first',
+        'b': 'second'
+    }
+    assert map_format_attr(d, 'a', '') == {'a': '', 'b': 'second'}
+    assert map_format_attr(d, 'a', '%s') == d
+    assert map_format_attr(d, 'a', '%sx') == {'a': 'firstx', 'b': 'second'}
+    assert map_format_attr(d, 'a', 'x%s') == {'a': 'xfirst', 'b': 'second'}
+    assert map_format_attr(d, 'b', '') == {'a': 'first', 'b': ''}
+    assert map_format_attr(d, 'b', '%s') == d
+    assert map_format_attr(d, 'b', '%sx') == {'a': 'first', 'b': 'secondx'}
+    assert map_format_attr(d, 'b', 'x%s') == {'a': 'first', 'b': 'xsecond'}
+    assert map_format_attr(d, 'c', '') == d
+    assert map_format_attr(d, 'c', '%s') == d
+    assert map_format_attr(d, 'c', '%sx') == d
+    assert map_format_attr(d, 'c', 'x%s') == d

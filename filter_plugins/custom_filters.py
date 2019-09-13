@@ -23,7 +23,11 @@ def map_format(value, pattern):
         {{ "%s - %s"|format("Hello?", "Foo!") }}
             -> Hello? - Foo!
     """
-    return soft_unicode(pattern) % (value)
+    if pattern != '':
+        result = soft_unicode(pattern) % (value)
+    else:
+        result = ''
+    return result
 
 
 def map_format_attr(d, attr, pattern):
@@ -34,7 +38,8 @@ def map_format_attr(d, attr, pattern):
             -> Hello? - Foo!
     """
     new_dict = copy.deepcopy(d)
-    d[attr] = map_format(d[attr], pattern)
+    if attr in d:
+        new_dict[attr] = map_format(d[attr], pattern)
     return new_dict
 
 
