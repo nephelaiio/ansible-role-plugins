@@ -1,5 +1,6 @@
 from jinja2.utils import soft_unicode
 import copy
+import itertools
 
 
 def merge_dicts(x, y):
@@ -23,24 +24,16 @@ def map_format(value, pattern):
         {{ "%s - %s"|format("Hello?", "Foo!") }}
             -> Hello? - Foo!
     """
-    if pattern != '':
+    if type(value) == str and type(pattern) == str:
         result = soft_unicode(pattern) % (value)
+    elif type(value) == dict and type(pattern) == dict:
+        result = dict([
+            [k, map_format(value, pattern[v])] for k, v in value.items()
+        ])
     else:
-        result = ''
-    return result
-
-
-def map_format_attr(d, attr, pattern):
-    """
-    Apply python string formatting on an object:
-    .. sourcecode:: jinja
-        {{ "%s - %s"|format("Hello?", "Foo!") }}
-            -> Hello? - Foo!
-    """
-    new_dict = copy.deepcopy(d)
-    if attr in d:
-        new_dict[attr] = map_format(d[attr], pattern)
-    return new_dict
+        assert False, \
+            f"unsupported argument types (#{type(value)}, #{type(pattern)})"
+        return result
 
 
 def reverse_record(record):
@@ -99,12 +92,38 @@ def select_attributes(d, atts):
     return new_dict
 
 
-def mergekd(item, key_attr):
-    return dict(merge_dicts(item[1], {key_attr: item[0]}))
+def drop_attributes(d, x):
+    new_dict = copy.deepcopy(d)
+    for y in list(itertools.chain.from_iterable([x])):
+        del new_dict[y]
+    return new_dict
 
 
-def dict2list(d, key_attr):
-    return [mergekd(item, key_attr) for item in d.items()]
+def to_dict(x, key=None):
+    if key is None:
+        result = dict(x)
+    else:
+        result = {key: x}
+    return result
+
+
+def merge_item(item, key_attr):
+    return dict(merge_dicts(item[1], to_dict(item[0], key_attr)))
+
+
+def key_item(item, key_attr, remove_key=True):
+    new_item = copy.deepcopy(item)
+    if remove_key:
+        del new_item[key_attr]
+    return [item[key_attr], new_item]
+
+
+def dict_to_list(d, key_attr):
+    return [merge_item(item, key_attr) for item in d.items()]
+
+
+def list_to_dict(l, key_attr):
+    return dict([key_item(x, key_attr) for x in l])
 
 
 class FilterModule(object):

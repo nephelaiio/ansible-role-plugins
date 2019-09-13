@@ -10,7 +10,7 @@ print(sys.path)
 
 from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
-    map_format, map_format_attr, mergekd, dict2list  # noqa: E402
+    map_format, merge_item, key_item, dict_to_list, list_to_dict  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -109,37 +109,32 @@ def test_map_format():
     assert map_format('a', 'x%s') == 'xa'
     assert map_format('a', '%s') == 'a'
     assert map_format('a', '') == ''
+    assert map_format({'a', 'first'}, {}) == {'a': 'first'}
+    assert map_format({'a', 'first'}, {'b': 'second'}) == {'a': 'first'}
+    assert map_format({'a', 'first'}, {'a': 'second'}) == {'a': 'second'}
+    assert map_format({'a', 'first'}, {'a': 'x%s'}) == {'a': 'xfirst'}
+    assert map_format({'a', 'first'}, {'a': '%sx'}) == {'a': 'firstx'}
 
 
-def test_map_format_attr():
+def test_merge_item():
+    d = {
+        'a': 'first'
+    }
+    assert merge_item(['second', d], 'b') == {'a': 'first', 'b': 'second'}
+    assert merge_item(['second', {}], 'b') == {'b': 'second'}
+    assert merge_item(['second', d], 'a') == {'a': 'second'}
+
+
+def test_key_item():
     d = {
         'a': 'first',
         'b': 'second'
     }
-    assert map_format_attr(d, 'a', '') == {'a': '', 'b': 'second'}
-    assert map_format_attr(d, 'a', '%s') == d
-    assert map_format_attr(d, 'a', '%sx') == {'a': 'firstx', 'b': 'second'}
-    assert map_format_attr(d, 'a', 'x%s') == {'a': 'xfirst', 'b': 'second'}
-    assert map_format_attr(d, 'b', '') == {'a': 'first', 'b': ''}
-    assert map_format_attr(d, 'b', '%s') == d
-    assert map_format_attr(d, 'b', '%sx') == {'a': 'first', 'b': 'secondx'}
-    assert map_format_attr(d, 'b', 'x%s') == {'a': 'first', 'b': 'xsecond'}
-    assert map_format_attr(d, 'c', '') == d
-    assert map_format_attr(d, 'c', '%s') == d
-    assert map_format_attr(d, 'c', '%sx') == d
-    assert map_format_attr(d, 'c', 'x%s') == d
+    assert key_item(d, 'a') == ['a', d]
+    assert key_item(d, 'b') == ['b', d]
 
 
-def test_mergekd():
-    d = {
-        'a': 'first'
-    }
-    assert mergekd(['second', d], 'b') == {'a': 'first', 'b': 'second'}
-    assert mergekd(['second', {}], 'b') == {'b': 'second'}
-    assert mergekd(['second', d], 'a') == {'a': 'second'}
-
-
-def test_dict2list():
+def test_dict_to_list():
     d = {
         'a': {
             'content': 'first'
@@ -148,5 +143,29 @@ def test_dict2list():
             'content': 'second'
         }
     }
-    assert dict2list(d, 'key') == [{'key': 'a', 'content': 'first'},
-                                   {'key': 'b', 'content': 'second'}]
+    assert dict_to_list(d, 'key') == [{'key': 'a', 'content': 'first'},
+                                      {'key': 'b', 'content': 'second'}]
+
+
+def test_list_to_dict():
+    d = {
+        'a': {
+            'content': 'first'
+        },
+        'b': {
+            'content': 'second'
+        }
+    }
+    lx = dict_to_list(d, 'key') == [{'key': 'a', 'content': 'first'},
+                                    {'key': 'b', 'content': 'second'}]
+    assert list_to_dict(lx) == d
+    assert list_to_dict(lx, False) == {
+        'a': {
+            'content': 'first',
+            'key': 'a'
+        },
+        'b': {
+            'content': 'second',
+            'key': 'b'
+        }
+    }
