@@ -29,12 +29,7 @@ def map_format(value, pattern):
         {{ "%s - %s"|format("Hello?", "Foo!") }}
             -> Hello? - Foo!
     """
-    if type(value) == str and type(pattern) == str:
-        try:
-            result = soft_unicode(pattern) % value
-        except TypeError:
-            result = pattern
-    elif is_hash(value) and is_hash(pattern):
+    if is_hash(value) and is_hash(pattern):
         def constant_factory(value):
             return lambda: value
         p = defaultdict(constant_factory("%s"))
@@ -43,9 +38,10 @@ def map_format(value, pattern):
             [k, map_format(v, p[k])] for k, v in value.items()
         ])
     else:
-        assert False, \
-            f"unsupported argument types " + \
-            "(#{type(value)}, #{type(pattern)})!= (str, str) | (dict, dict)"
+        try:
+            result = soft_unicode(pattern) % value
+        except TypeError:
+            result = pattern
     return result
 
 
@@ -117,12 +113,12 @@ def to_dict(x, key=None):
     if key is None:
         result = dict(x)
     else:
-        if type(key) == str:
-            result = {key: x}
         if is_hash(key):
             result = dict([
                 [k, map_format(x, v)] for k, v in key.items()
             ])
+        else:
+            result = {key: x}
     return result
 
 
