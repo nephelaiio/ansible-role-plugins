@@ -1,6 +1,11 @@
 from jinja2.utils import soft_unicode
+from collections import defaultdict
 import copy
 import itertools
+
+
+def is_hash(d):
+    return callable(getattr(d, 'get', None))
 
 
 def merge_dicts(x, y):
@@ -25,15 +30,22 @@ def map_format(value, pattern):
             -> Hello? - Foo!
     """
     if type(value) == str and type(pattern) == str:
-        result = soft_unicode(pattern) % (value)
-    elif type(value) == dict and type(pattern) == dict:
+        try:
+            result = soft_unicode(pattern) % value
+        except TypeError:
+            result = pattern
+    elif is_hash(value) and is_hash(pattern):
+        def constant_factory(value):
+            return lambda: value
+        p = defaultdict(constant_factory("%s"))
+        p.update(pattern)
         result = dict([
-            [k, map_format(value, pattern[v])] for k, v in value.items()
+            [k, map_format(v, p[k])] for k, v in value.items()
         ])
     else:
         assert False, \
             f"unsupported argument types (#{type(value)}, #{type(pattern)})"
-        return result
+    return result
 
 
 def reverse_record(record):
@@ -122,8 +134,8 @@ def dict_to_list(d, key_attr):
     return [merge_item(item, key_attr) for item in d.items()]
 
 
-def list_to_dict(l, key_attr):
-    return dict([key_item(x, key_attr) for x in l])
+def list_to_dict(l, key_attr, remove_key=True):
+    return dict([key_item(x, key_attr, remove_key) for x in l])
 
 
 class FilterModule(object):
@@ -142,5 +154,9 @@ class FilterModule(object):
             'merge_dicts': merge_dicts,
             'select_attributes': select_attributes,
             'merge_dicts_reverse': merge_dicts_reverse,
-            'map_format_attr': map_format_attr
+            'to_dict': to_dict,
+            'merge_item': merge_item,
+            'key_item': key_item,
+            'dict_to_list': dict_to_list,
+            'list_to_dict': list_to_dict
         }

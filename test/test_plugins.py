@@ -10,8 +10,16 @@ print(sys.path)
 
 from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
-    map_format, merge_item, key_item, dict_to_list, list_to_dict  # noqa: E402
+    map_format, merge_item, key_item, dict_to_list, list_to_dict, \
+    is_hash  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
+
+
+def test_is_hash():
+    assert is_hash({}) is True
+    assert is_hash(dict()) is True
+    assert is_hash("") is False
+    assert is_hash([]) is False
 
 
 def test_reverse_record():
@@ -109,11 +117,10 @@ def test_map_format():
     assert map_format('a', 'x%s') == 'xa'
     assert map_format('a', '%s') == 'a'
     assert map_format('a', '') == ''
-    assert map_format({'a', 'first'}, {}) == {'a': 'first'}
-    assert map_format({'a', 'first'}, {'b': 'second'}) == {'a': 'first'}
-    assert map_format({'a', 'first'}, {'a': 'second'}) == {'a': 'second'}
-    assert map_format({'a', 'first'}, {'a': 'x%s'}) == {'a': 'xfirst'}
-    assert map_format({'a', 'first'}, {'a': '%sx'}) == {'a': 'firstx'}
+    assert map_format({'a': 'first'}, {'b': 'x%s'}) == {'a': 'first'}
+    assert map_format({'a': 'first'}, {'a': 'x%s'}) == {'a': 'xfirst'}
+    assert map_format({'a': 'first'}, {'a': '%sx'}) == {'a': 'firstx'}
+    assert map_format({'a': 'first'}, {'a': 'second'}) == {'a': 'second'}
 
 
 def test_merge_item():
@@ -130,8 +137,8 @@ def test_key_item():
         'a': 'first',
         'b': 'second'
     }
-    assert key_item(d, 'a') == ['a', d]
-    assert key_item(d, 'b') == ['b', d]
+    assert key_item(d, 'a') == ['first', {'b': 'second'}]
+    assert key_item(d, 'b') == ['second', {'a': 'first'}]
 
 
 def test_dict_to_list():
@@ -156,10 +163,9 @@ def test_list_to_dict():
             'content': 'second'
         }
     }
-    lx = dict_to_list(d, 'key') == [{'key': 'a', 'content': 'first'},
-                                    {'key': 'b', 'content': 'second'}]
-    assert list_to_dict(lx) == d
-    assert list_to_dict(lx, False) == {
+    lx = dict_to_list(d, 'key')
+    assert list_to_dict(lx, 'key') == d
+    assert list_to_dict(lx, 'key', False) == {
         'a': {
             'content': 'first',
             'key': 'a'
