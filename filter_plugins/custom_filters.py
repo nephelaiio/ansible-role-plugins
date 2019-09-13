@@ -44,8 +44,8 @@ def map_format(value, pattern):
         ])
     else:
         assert False, \
-            f"unsupported argument types (#{type(value)}, #{type(pattern)}) \
-            != (str, str) | (dict, dict) "
+            f"unsupported argument types " + \
+            "(#{type(value)}, #{type(pattern)})!= (str, str) | (dict, dict)"
     return result
 
 
