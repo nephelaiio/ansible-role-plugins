@@ -10,8 +10,8 @@ print(sys.path)
 
 from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
-    map_format, merge_item, key_item, dict_to_list, list_to_dict, \
-    is_hash  # noqa: E402
+    drop_attributes, map_format, merge_item, key_item, dict_to_list, \
+    list_to_dict, is_hash, to_dict  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -109,6 +109,13 @@ def test_select_attributes():
     assert select_attributes({'a': '0', 'b': '1'},
                              ['a', 'b']) == {'a': '0', 'b': '1'}
     assert select_attributes({'a': '0'}, ['a', 'b']) == {'a': '0'}
+
+
+def test_drop_attributes():
+    assert drop_attributes({'a': '0', 'b': '1'}, ['a']) == {'b': '1'}
+    assert drop_attributes({'a': '0', 'b': '1'}, []) == {'a': '0', 'b': '1'}
+    assert drop_attributes({'a': '0', 'b': '1'}, ['a', 'b']) == {}
+    assert drop_attributes({'a': '0'}, ['c']) == {'a': '0'}
 
 
 def test_map_format():

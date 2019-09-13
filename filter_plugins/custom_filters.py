@@ -107,7 +107,8 @@ def select_attributes(d, atts):
 def drop_attributes(d, x):
     new_dict = copy.deepcopy(d)
     for y in list(itertools.chain.from_iterable([x])):
-        del new_dict[y]
+        if y in d:
+            del new_dict[y]
     return new_dict
 
 
