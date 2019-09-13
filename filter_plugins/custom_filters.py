@@ -99,6 +99,14 @@ def select_attributes(d, atts):
     return new_dict
 
 
+def mergekd(item, key_attr):
+    return dict(merge_dicts(item[1], {key_attr: item[0]}))
+
+
+def dict2list(d, key_attr):
+    return [mergekd(item, key_attr) for item in d.items()]
+
+
 class FilterModule(object):
     ''' jinja2 filters '''
 

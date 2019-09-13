@@ -10,7 +10,7 @@ print(sys.path)
 
 from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
-    map_format, map_format_attr  # noqa: E402
+    map_format, map_format_attr, mergekd, dict2list  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -128,3 +128,25 @@ def test_map_format_attr():
     assert map_format_attr(d, 'c', '%s') == d
     assert map_format_attr(d, 'c', '%sx') == d
     assert map_format_attr(d, 'c', 'x%s') == d
+
+
+def test_mergekd():
+    d = {
+        'a': 'first'
+    }
+    assert mergekd(['second', d], 'b') == {'a': 'first', 'b': 'second'}
+    assert mergekd(['second', {}], 'b') == {'b': 'second'}
+    assert mergekd(['second', d], 'a') == {'a': 'second'}
+
+
+def test_dict2list():
+    d = {
+        'a': {
+            'content': 'first'
+        },
+        'b': {
+            'content': 'second'
+        }
+    }
+    assert dict2list(d, 'key') == [{'key': 'a', 'content': 'first'},
+                                   {'key': 'b', 'content': 'second'}]
