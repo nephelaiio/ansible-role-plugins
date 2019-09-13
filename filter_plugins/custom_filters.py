@@ -7,6 +7,7 @@ def merge_dicts(x, y):
     z.update(y)
     return z
 
+
 def merge_dicts_reverse(x, y):
     return merge_dicts(y, x)
 
@@ -23,6 +24,18 @@ def map_format(value, pattern):
             -> Hello? - Foo!
     """
     return soft_unicode(pattern) % (value)
+
+
+def map_format_attr(d, attr, pattern):
+    """
+    Apply python string formatting on an object:
+    .. sourcecode:: jinja
+        {{ "%s - %s"|format("Hello?", "Foo!") }}
+            -> Hello? - Foo!
+    """
+    new_dict = copy.deepcopy(d)
+    d[attr] = map_format(d[attr], pattern)
+    return new_dict
 
 
 def reverse_record(record):
@@ -96,5 +109,6 @@ class FilterModule(object):
             'alias_keys': alias_keys,
             'merge_dicts': merge_dicts,
             'select_attributes': select_attributes,
-            'merge_dicts_reverse': merge_dicts_reverse
+            'merge_dicts_reverse': merge_dicts_reverse,
+            'map_format_attr': map_format_attr
         }
