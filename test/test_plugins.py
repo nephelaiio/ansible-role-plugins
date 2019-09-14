@@ -126,6 +126,8 @@ def test_to_dict():
                                                            'b': 'second'}
     assert to_dict('a', {'a': 'first', 'b': '%s'}) == {'a': 'first',
                                                        'b': 'a'}
+    assert to_dict('a', {'%s_1': 'first', '%s_2': '%s'}) == {'a_1': 'first',
+                                                             'a_2': 'a'}
 
 
 def test_map_format():

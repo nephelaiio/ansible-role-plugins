@@ -115,7 +115,7 @@ def to_dict(x, key=None):
     else:
         if is_hash(key):
             result = dict([
-                [k, map_format(x, v)] for k, v in key.items()
+                [map_format(x, k), map_format(x, v)] for k, v in key.items()
             ])
         else:
             result = {key: x}
