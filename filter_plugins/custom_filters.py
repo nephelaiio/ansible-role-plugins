@@ -143,7 +143,7 @@ def list_to_dict(l, key_attr, remove_key=True):
 
 def to_kv(d, sep='.', prefix=''):
     if not is_hash(d):
-        return([{prefix: d}])
+        return([{'key': prefix, 'value': d}])
     else:
         level = [to_kv(v, sep, (prefix != '' and (prefix + sep) or '') + k)
                  for k, v in d.items()]
