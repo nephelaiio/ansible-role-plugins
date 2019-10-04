@@ -141,6 +141,15 @@ def list_to_dict(l, key_attr, remove_key=True):
     return dict([key_item(x, key_attr, remove_key) for x in l])
 
 
+def to_kv(d, sep='.', prefix=''):
+    if not is_hash(d):
+        return([{prefix: d}])
+    else:
+        level = [to_kv(v, sep, (prefix != '' and (prefix + sep) or '') + k)
+                 for k, v in d.items()]
+        return list(itertools.chain.from_iterable(level))
+
+
 class FilterModule(object):
     ''' jinja2 filters '''
 
@@ -161,5 +170,6 @@ class FilterModule(object):
             'merge_item': merge_item,
             'key_item': key_item,
             'dict_to_list': dict_to_list,
-            'list_to_dict': list_to_dict
+            'list_to_dict': list_to_dict,
+            'to_kv': to_kv
         }

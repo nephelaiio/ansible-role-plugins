@@ -11,7 +11,7 @@ print(sys.path)
 from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
     drop_attributes, map_format, merge_item, key_item, dict_to_list, \
-    list_to_dict, is_hash, to_dict  # noqa: E402
+    list_to_dict, is_hash, to_dict, to_kv  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -194,3 +194,19 @@ def test_list_to_dict():
             'key': 'b'
         }
     }
+
+
+def test_to_kv():
+    assert to_kv(1) == [{'': 1}]
+    assert to_kv(1, prefix='base') == [{'base': 1}]
+    assert to_kv('1', prefix='base') == [{'base': '1'}]
+    assert to_kv([0, 1], prefix='base') == [{'base': [0, 1]}]
+    assert to_kv([0, 1], prefix='base') == [{'base': [0, 1]}]
+    assert to_kv({'a': 1}, prefix='') == [{'a': 1}]
+    assert to_kv({'a': [0, 1]}, prefix='') == [{'a': [0, 1]}]
+    assert to_kv({'a': {'b': 'c'}, 'd': 'e'}, prefix='') == \
+        [{'a.b': 'c'}, {'d': 'e'}]
+    assert to_kv({'a': {'b': 'c'}, 'd': 'e'}, sep='/', prefix='') == \
+        [{'a/b': 'c'}, {'d': 'e'}]
+    assert to_kv({'a': {'b': {'c': 'd'}, 'e': 'f'}, 'g': 'h'}, sep='/') == \
+        [{'a/b/c': 'd'}, {'a/e': 'f'}, {'g': 'h'}]
