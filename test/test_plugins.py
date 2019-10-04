@@ -205,8 +205,12 @@ def test_to_kv():
     assert to_kv({'a': 1}, prefix='') == [{'key': 'a', 'value': 1}]
     assert to_kv({'a': [0, 1]}, prefix='') == [{'key': 'a', 'value': [0, 1]}]
     assert to_kv({'a': {'b': 'c'}, 'd': 'e'}, prefix='') == \
-        [{'key': 'a.b', 'value': 'c'}, {'key': 'd', 'value': 'e'}]
+        [{'key': 'a.b', 'value': 'c'},
+         {'key': 'd', 'value': 'e'}]
     assert to_kv({'a': {'b': 'c'}, 'd': 'e'}, sep='/', prefix='') == \
-        [{'key': 'a/b', 'value': 'c'}, {'key': 'd', 'value': 'e'}]
+        [{'key': 'a/b', 'value': 'c'},
+         {'key': 'd', 'value': 'e'}]
     assert to_kv({'a': {'b': {'c': 'd'}, 'e': 'f'}, 'g': 'h'}, sep='/') == \
-        [{'key': 'a/b/c', 'value': 'd'}, {'key': 'a/e', 'value': 'f'}, {'key': 'g', 'value': 'h'}]
+        [{'key': 'a/b/c', 'value': 'd'},
+         {'key': 'a/e', 'value': 'f'},
+         {'key': 'g', 'value': 'h'}]
