@@ -198,12 +198,20 @@ def test_list_to_dict():
 
 def test_to_kv():
     assert to_kv(1) == [{'key': '', 'value': 1}]
+    assert to_kv(['a']) == [{'key': '0', 'value': 'a'}]
+    assert to_kv(['a', 'b']) == [{'key': '0', 'value': 'a'},
+                                 {'key': '1', 'value': 'b'}]
     assert to_kv(1, prefix='base') == [{'key': 'base', 'value': 1}]
     assert to_kv('1', prefix='base') == [{'key': 'base', 'value': '1'}]
-    assert to_kv([0, 1], prefix='base') == [{'key': 'base', 'value': [0, 1]}]
-    assert to_kv([0, 1], prefix='base') == [{'key': 'base', 'value': [0, 1]}]
+    assert to_kv(['a', 'b'], prefix='base') == \
+        [{'key': 'base.0', 'value': 'a'}, {'key': 'base.1', 'value': 'b'}]
     assert to_kv({'a': 1}, prefix='') == [{'key': 'a', 'value': 1}]
-    assert to_kv({'a': [0, 1]}, prefix='') == [{'key': 'a', 'value': [0, 1]}]
+    assert to_kv({'a': ['b', 'c']}) == \
+        [{'key': 'a.0', 'value': 'b'},
+         {'key': 'a.1', 'value': 'c'}]
+    assert to_kv({'a': ['b', 'c']}, sep='') == \
+        [{'key': 'a0', 'value': 'b'},
+         {'key': 'a1', 'value': 'c'}]
     assert to_kv({'a': {'b': 'c'}, 'd': 'e'}, prefix='') == \
         [{'key': 'a.b', 'value': 'c'},
          {'key': 'd', 'value': 'e'}]
@@ -214,3 +222,11 @@ def test_to_kv():
         [{'key': 'a/b/c', 'value': 'd'},
          {'key': 'a/e', 'value': 'f'},
          {'key': 'g', 'value': 'h'}]
+    assert to_kv({'a': {'b': 'c'}, 'd': ['e', 'f']}, prefix='') == \
+        [{'key': 'a.b', 'value': 'c'},
+         {'key': 'd.0', 'value': 'e'},
+         {'key': 'd.1', 'value': 'f'}]
+    assert to_kv({'a': [{'b': 'c', 'd': 'e'}, 'h']}, sep='/', prefix='') == \
+        [{'key': 'a/0/b', 'value': 'c'},
+         {'key': 'a/0/d', 'value': 'e'},
+         {'key': 'a/1', 'value': 'h'}]

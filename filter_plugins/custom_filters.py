@@ -1,5 +1,6 @@
 from jinja2.utils import soft_unicode
 from collections import defaultdict
+from collections.abc import Sequence
 import copy
 import itertools
 
@@ -142,12 +143,16 @@ def list_to_dict(l, key_attr, remove_key=True):
 
 
 def to_kv(d, sep='.', prefix=''):
-    if not is_hash(d):
-        return([{'key': prefix, 'value': d}])
+    if is_hash(d):
+        lvl = [to_kv(v, sep, (prefix != '' and (prefix + sep) or '') + k)
+               for k, v in d.items()]
+        return list(itertools.chain.from_iterable(lvl))
+    elif isinstance(d, Sequence) and not isinstance(d, str):
+        lvl = [to_kv(v, sep, (prefix != '' and (prefix + sep) or '') + str(i))
+               for i, v in list(enumerate(d))]
+        return list(itertools.chain.from_iterable(lvl))
     else:
-        level = [to_kv(v, sep, (prefix != '' and (prefix + sep) or '') + k)
-                 for k, v in d.items()]
-        return list(itertools.chain.from_iterable(level))
+        return([{'key': prefix, 'value': d}])
 
 
 class FilterModule(object):
