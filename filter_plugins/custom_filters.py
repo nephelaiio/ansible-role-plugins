@@ -3,6 +3,8 @@ from collections import defaultdict
 from collections.abc import Sequence
 import copy
 import itertools
+import yaml
+import sys
 
 
 def is_hash(d):
@@ -153,6 +155,10 @@ def to_kv(d, sep='.', prefix=''):
         return list(itertools.chain.from_iterable(lvl))
     else:
         return([{'key': prefix, 'value': d}])
+
+
+def to_safe_yaml(ds, indent=2):
+    return yaml.safe_dump(ds)
 
 
 class FilterModule(object):

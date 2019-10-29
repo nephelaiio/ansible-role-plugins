@@ -11,7 +11,7 @@ print(sys.path)
 from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
     drop_attributes, map_format, merge_item, key_item, dict_to_list, \
-    list_to_dict, is_hash, to_dict, to_kv  # noqa: E402
+    list_to_dict, is_hash, to_dict, to_kv, to_safe_yaml  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -230,3 +230,10 @@ def test_to_kv():
         [{'key': 'a/0/b', 'value': 'c'},
          {'key': 'a/0/d', 'value': 'e'},
          {'key': 'a/1', 'value': 'h'}]
+
+
+def test_to_safe_yaml():
+    assert to_safe_yaml([{'a': 0}, {'b': 1}]) == '- a: 0\n- b: 1\n'
+    assert to_safe_yaml({'a': 0}) == 'a: 0\n'
+    assert to_safe_yaml({'a': [0, 1]}) == 'a:\n- 0\n- 1\n'
+    assert to_safe_yaml({'a': 0, 'b': 1}) == 'a: 0\nb: 1\n'

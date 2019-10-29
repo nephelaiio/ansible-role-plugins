@@ -5,6 +5,11 @@
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/plugins) for custom plugins definitions
 
+
+## Requirements
+
+* [PyYaml](https://pyyaml.org) is required for `to_safe_yaml` filter execution
+
 ## Example Playbook
 
 ```
