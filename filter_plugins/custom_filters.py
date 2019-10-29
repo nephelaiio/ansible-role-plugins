@@ -1,10 +1,14 @@
 from jinja2.utils import soft_unicode
-from collections import defaultdict
-from collections.abc import Sequence
 import copy
 import itertools
 import yaml
 import sys
+
+if sys.version_info[0] < 3:
+    from collections import Sequence, defaultdict
+else:
+    from collections.abc import Sequence
+    from collections import defaultdict
 
 
 def is_hash(d):
