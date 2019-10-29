@@ -182,5 +182,6 @@ class FilterModule(object):
             'key_item': key_item,
             'dict_to_list': dict_to_list,
             'list_to_dict': list_to_dict,
-            'to_kv': to_kv
+            'to_kv': to_kv,
+            'to_safe_yaml': to_safe_yaml
         }
