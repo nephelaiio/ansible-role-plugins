@@ -52,6 +52,10 @@ def map_format(value, pattern):
     return result
 
 
+def map_values(d):
+    return list(d.values())
+
+
 def reverse_record(record):
     def reverse_address(addr):
         rev = '.'.join(addr.split('.')[::-1])
@@ -98,6 +102,14 @@ def alias_keys(d, alias={}):
     for k, v in list(alias.items()):
         new_dict[v] = new_dict[k]
     return new_dict
+
+
+def map_attributes(d, atts):
+    new_array = []
+    for k, v in list(d.items()):
+        if k in atts:
+            new_array = new_array + [v]
+    return new_array
 
 
 def select_attributes(d, atts):
@@ -175,10 +187,12 @@ class FilterModule(object):
             'head': head,
             'tail': tail,
             'map_format': map_format,
+            'map_values': map_values,
             'reverse_record': reverse_record,
             'zone_fwd': zone_fwd,
             'alias_keys': alias_keys,
             'merge_dicts': merge_dicts,
+            'map_attributes': map_attributes,
             'select_attributes': select_attributes,
             'merge_dicts_reverse': merge_dicts_reverse,
             'to_dict': to_dict,

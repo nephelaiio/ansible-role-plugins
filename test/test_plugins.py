@@ -11,7 +11,8 @@ print(sys.path)
 from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
     drop_attributes, map_format, merge_item, key_item, dict_to_list, \
-    list_to_dict, is_hash, to_dict, to_kv, to_safe_yaml  # noqa: E402
+    list_to_dict, is_hash, to_dict, to_kv, to_safe_yaml, map_values, \
+    map_attributes  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -103,6 +104,14 @@ def test_merge_dicts_reverse():
                                {'a': '2'}) == {'a': '0', 'b': '1'}
 
 
+def test_map_attributes():
+    assert map_attributes({'a': '0', 'b': '1'}, ['a']) == ['0']
+    assert map_attributes({'a': '0', 'b': '1'}, []) == []
+    assert map_attributes({'a': '0', 'b': '1'},
+                          ['a', 'b']) == ['0', '1']
+    assert map_attributes({'a': '0'}, ['a', 'b']) == ['0']
+
+
 def test_select_attributes():
     assert select_attributes({'a': '0', 'b': '1'}, ['a']) == {'a': '0'}
     assert select_attributes({'a': '0', 'b': '1'}, []) == {}
@@ -140,6 +149,11 @@ def test_map_format():
     assert map_format({'a': 'first'}, {'a': 'x%s'}) == {'a': 'xfirst'}
     assert map_format({'a': 'first'}, {'a': '%sx'}) == {'a': 'firstx'}
     assert map_format({'a': 'first'}, {'a': 'second'}) == {'a': 'second'}
+
+
+def test_map_values():
+    assert map_values({'a': 'first'}) == ['first']
+    assert map_values({'a': 'first', 'b': 'second'}) == ['first', 'second']
 
 
 def test_merge_item():
