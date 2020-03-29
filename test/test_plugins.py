@@ -107,8 +107,11 @@ def test_merge_dicts_reverse():
 def test_map_attributes():
     assert map_attributes({'a': '0', 'b': '1'}, ['a']) == ['0']
     assert map_attributes({'a': '0', 'b': '1'}, []) == []
+    assert map_attributes({'a': '0', 'b': '1'}, ['c']) == []
     assert map_attributes({'a': '0', 'b': '1'},
                           ['a', 'b']) == ['0', '1']
+    assert map_attributes({'a': '0', 'b': '1'},
+                          ['b', 'a']) == ['1', '0']
     assert map_attributes({'a': '0'}, ['a', 'b']) == ['0']
 
 

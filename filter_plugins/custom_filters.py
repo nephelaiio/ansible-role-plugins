@@ -106,9 +106,9 @@ def alias_keys(d, alias={}):
 
 def map_attributes(d, atts):
     new_array = []
-    for k, v in list(d.items()):
-        if k in atts:
-            new_array = new_array + [v]
+    for k in atts:
+        if k in d:
+            new_array = new_array + [d[k]]
     return new_array
 
 
