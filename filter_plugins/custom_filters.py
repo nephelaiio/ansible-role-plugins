@@ -1,4 +1,4 @@
-from jinja2.utils import soft_unicode
+from markupsafe import soft_unicode
 import copy
 import itertools
 import yaml
