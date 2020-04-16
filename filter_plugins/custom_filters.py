@@ -193,6 +193,7 @@ class FilterModule(object):
             'alias_keys': alias_keys,
             'merge_dicts': merge_dicts,
             'map_attributes': map_attributes,
+            'drop_attributes': drop_attributes,
             'select_attributes': select_attributes,
             'merge_dicts_reverse': merge_dicts_reverse,
             'to_dict': to_dict,
