@@ -1,8 +1,8 @@
-from netaddr import IPAddress, IPNetwork
 import re
 
 
 def test_network(record={}, net='0.0.0.0/0', prop='ansible_host'):
+    from netaddr import IPAddress, IPNetwork
     if prop in record:
         if IPAddress(record[prop]) in IPNetwork(net):
             return record
