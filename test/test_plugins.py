@@ -1,5 +1,6 @@
 import sys
 import os
+import pytest
 
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]),
                              'filter_plugins'))
@@ -12,7 +13,7 @@ from custom_filters import reverse_record, filename, with_ext, \
     alias_keys, merge_dicts, merge_dicts_reverse, select_attributes, \
     drop_attributes, map_format, merge_item, key_item, dict_to_list, \
     list_to_dict, is_hash, to_dict, to_kv, to_safe_yaml, map_values, \
-    map_attributes  # noqa: E402
+    map_attributes, sorted_get  # noqa: E402
 from custom_tests import test_network, test_property  # noqa: E402
 
 
@@ -254,3 +255,33 @@ def test_to_safe_yaml():
     assert to_safe_yaml({'a': 0}) == 'a: 0\n'
     assert to_safe_yaml({'a': [0, 1]}) == 'a:\n- 0\n- 1\n'
     assert to_safe_yaml({'a': 0, 'b': 1}) == 'a: 0\nb: 1\n'
+
+
+def test_sorted_get():
+    d = {
+        'ubuntu': 'ubuntu',
+        'ubuntu-focal': 'ubuntu-focal',
+        'centos': 'centos',
+        'default': 'default',
+    }
+    assert sorted_get(d, ['default']) == 'default'
+    assert sorted_get(d, ['centos']) == 'centos'
+    assert sorted_get(d, ['centos', 'default']) == 'centos'
+    assert sorted_get(d, ['ubuntu-focal', 'ubuntu']) == 'ubuntu-focal'
+    assert sorted_get(d, ['ubuntu', 'ubuntu-focal']) == 'ubuntu'
+    assert sorted_get(d, ['centos', 'ubuntu', 'default']) == 'centos'
+    assert sorted_get(d, ['ubuntu', 'centos', 'default']) == 'ubuntu'
+
+    assert sorted_get(d, ['na', 'default']) == 'default'
+    assert sorted_get(d, ['na', 'centos']) == 'centos'
+    assert sorted_get(d, ['na', 'centos', 'default']) == 'centos'
+    assert sorted_get(d, ['na', 'ubuntu-focal', 'ubuntu']) == 'ubuntu-focal'
+    assert sorted_get(d, ['na', 'ubuntu', 'ubuntu-focal']) == 'ubuntu'
+    assert sorted_get(d, ['na', 'centos', 'ubuntu', 'default']) == 'centos'
+    assert sorted_get(d, ['na', 'ubuntu', 'centos', 'default']) == 'ubuntu'
+
+    with pytest.raises(KeyError):
+        sorted_get(d, ['na'])
+    with pytest.raises(KeyError):
+
+        sorted_get(d, ['na', 'an'])

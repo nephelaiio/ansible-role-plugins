@@ -177,6 +177,13 @@ def to_safe_yaml(ds, indent=2):
     return yaml.safe_dump(ds)
 
 
+def sorted_get(d, ks):
+    for k in ks:
+        if k in d:
+            return d[k]
+    raise KeyError('None of {} keys found'.format(ks))
+
+
 class FilterModule(object):
     ''' jinja2 filters '''
 
@@ -202,5 +209,6 @@ class FilterModule(object):
             'dict_to_list': dict_to_list,
             'list_to_dict': list_to_dict,
             'to_kv': to_kv,
-            'to_safe_yaml': to_safe_yaml
+            'to_safe_yaml': to_safe_yaml,
+            'sorted_get': sorted_get
         }
