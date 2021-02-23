@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: plugins
-  author: Ted Cook
+  author: nephelaiio
   description: An Ansible role to install and configure plugins
   license: MIT
   min_ansible_version: 2.2
