@@ -3,6 +3,7 @@ import copy
 import itertools
 import yaml
 import sys
+import netaddr
 
 if sys.version_info[0] < 3:
     from collections import Sequence, defaultdict
@@ -12,7 +13,7 @@ else:
 
 
 def is_hash(d):
-    return callable(getattr(d, 'get', None))
+    return callable(getattr(d, "get", None))
 
 
 def merge_dicts(x, y):
@@ -26,7 +27,7 @@ def merge_dicts_reverse(x, y):
 
 
 def filename(basename):
-    return (basename.split('.')[0])
+    return basename.split(".")[0]
 
 
 def map_format(value, pattern):
@@ -37,13 +38,13 @@ def map_format(value, pattern):
             -> Hello? - Foo!
     """
     if is_hash(value) and is_hash(pattern):
+
         def constant_factory(value):
             return lambda: value
+
         p = defaultdict(constant_factory("%s"))
         p.update(pattern)
-        result = dict([
-            [k, map_format(v, p[k])] for k, v in value.items()
-        ])
+        result = dict([[k, map_format(v, p[k])] for k, v in value.items()])
     else:
         try:
             result = soft_unicode(pattern) % value
@@ -58,39 +59,40 @@ def map_values(d):
 
 def reverse_record(record):
     def reverse_address(addr):
-        rev = '.'.join(addr.split('.')[::-1])
-        return("{0}.{1}".format(rev, 'in-addr.arpa'))
-    return ({
-        'host': reverse_address(record['ip-address']),
-        'ip-address': record['host'],
-        'type': 'PTR'
-    })
+        rev = ".".join(addr.split(".")[::-1])
+        return "{0}.{1}".format(rev, "in-addr.arpa")
+
+    return {
+        "host": reverse_address(record["ip-address"]),
+        "ip-address": record["host"],
+        "type": "PTR",
+    }
 
 
 def with_ext(basename, ext):
-    return ("{0}.{1}".format(filename(basename), ext))
+    return "{0}.{1}".format(filename(basename), ext)
 
 
 def zone_fwd(zone, servers):
-    return({
+    return {
         'zone "{0}" IN'.format(zone): {
-            'type': 'forward',
-            'forward': 'only',
-            'forwarders': servers
+            "type": "forward",
+            "forward": "only",
+            "forwarders": servers,
         }
-    })
+    }
 
 
 def head(x):
-    return(x[0])
+    return x[0]
 
 
 def tail(x):
-    return(x[1::])
+    return x[1::]
 
 
 def split_with(x, d):
-    return(x.split(d))
+    return x.split(d)
 
 
 def join_with(x, d):
@@ -133,9 +135,9 @@ def to_dict(x, key=None):
         result = dict(x)
     else:
         if is_hash(key):
-            result = dict([
-                [map_format(x, k), map_format(x, v)] for k, v in key.items()
-            ])
+            result = dict(
+                [[map_format(x, k), map_format(x, v)] for k, v in key.items()]
+            )
         else:
             result = {key: x}
     return result
@@ -160,17 +162,21 @@ def list_to_dict(l, key_attr, remove_key=True):
     return dict([key_item(x, key_attr, remove_key) for x in l])
 
 
-def to_kv(d, sep='.', prefix=''):
+def to_kv(d, sep=".", prefix=""):
     if is_hash(d):
-        lvl = [to_kv(v, sep, (prefix != '' and (prefix + sep) or '') + k)
-               for k, v in d.items()]
+        lvl = [
+            to_kv(v, sep, (prefix != "" and (prefix + sep) or "") + k)
+            for k, v in d.items()
+        ]
         return list(itertools.chain.from_iterable(lvl))
     elif isinstance(d, Sequence) and not isinstance(d, str):
-        lvl = [to_kv(v, sep, (prefix != '' and (prefix + sep) or '') + str(i))
-               for i, v in list(enumerate(d))]
+        lvl = [
+            to_kv(v, sep, (prefix != "" and (prefix + sep) or "") + str(i))
+            for i, v in list(enumerate(d))
+        ]
         return list(itertools.chain.from_iterable(lvl))
     else:
-        return([{'key': prefix, 'value': d}])
+        return [{"key": prefix, "value": d}]
 
 
 def to_safe_yaml(ds, indent=2):
@@ -181,34 +187,42 @@ def sorted_get(d, ks):
     for k in ks:
         if k in d:
             return d[k]
-    raise KeyError('None of {} keys found'.format(ks))
+    raise KeyError("None of {} keys found".format(ks))
+
+
+def ip_range(spec):
+    addrs = spec.split("-")
+    start = addrs[0]
+    end = start if len(addrs) == 1 else addrs[1]
+    return [str(ip) for ip in netaddr.iter_iprange(start, end)]
 
 
 class FilterModule(object):
-    ''' jinja2 filters '''
+    """jinja2 filters"""
 
     def filters(self):
         return {
-            'split_with': split_with,
-            'join_with': join_with,
-            'head': head,
-            'tail': tail,
-            'map_format': map_format,
-            'map_values': map_values,
-            'reverse_record': reverse_record,
-            'zone_fwd': zone_fwd,
-            'alias_keys': alias_keys,
-            'merge_dicts': merge_dicts,
-            'map_attributes': map_attributes,
-            'drop_attributes': drop_attributes,
-            'select_attributes': select_attributes,
-            'merge_dicts_reverse': merge_dicts_reverse,
-            'to_dict': to_dict,
-            'merge_item': merge_item,
-            'key_item': key_item,
-            'dict_to_list': dict_to_list,
-            'list_to_dict': list_to_dict,
-            'to_kv': to_kv,
-            'to_safe_yaml': to_safe_yaml,
-            'sorted_get': sorted_get
+            "split_with": split_with,
+            "join_with": join_with,
+            "head": head,
+            "tail": tail,
+            "map_format": map_format,
+            "map_values": map_values,
+            "reverse_record": reverse_record,
+            "zone_fwd": zone_fwd,
+            "alias_keys": alias_keys,
+            "merge_dicts": merge_dicts,
+            "map_attributes": map_attributes,
+            "drop_attributes": drop_attributes,
+            "select_attributes": select_attributes,
+            "merge_dicts_reverse": merge_dicts_reverse,
+            "to_dict": to_dict,
+            "merge_item": merge_item,
+            "key_item": key_item,
+            "dict_to_list": dict_to_list,
+            "list_to_dict": list_to_dict,
+            "to_kv": to_kv,
+            "to_safe_yaml": to_safe_yaml,
+            "sorted_get": sorted_get,
+            "ip_range": ip_range,
         }

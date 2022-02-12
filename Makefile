@@ -1,4 +1,4 @@
 .PHONY: test
 
 test:
-	pytest
+	poetry run pytest --disable-pytest-warnings
