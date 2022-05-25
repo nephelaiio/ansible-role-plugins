@@ -301,4 +301,5 @@ class FilterModule(object):
             "map_flatten": map_flatten,
             "map_join": map_join,
             "merge_join": merge_join,
+            "map_group": map_group,
         }
