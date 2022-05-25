@@ -197,6 +197,79 @@ def ip_range(spec):
     return [str(ip) for ip in netaddr.iter_iprange(start, end)]
 
 
+def map_flatten(o, env=""):
+    if env == "" and not isinstance(o, dict):
+        raise ValueError("Argument must be dictionary")
+    else:
+        if isinstance(o, dict):
+            flattened = {}
+            for k, v in o.items():
+                if env == "":
+                    newenv = k
+                else:
+                    newenv = f"{env}.{k}"
+                if isinstance(v, dict) or isinstance(v, list):
+                    item = map_flatten(v, newenv)
+                else:
+                    item = {newenv: v}
+                flattened = {**flattened, **item}
+            return flattened
+        elif isinstance(o, list):
+            flattened = {}
+            for i in range(len(o)):
+                if env == "":
+                    newenv = f"{i}"
+                else:
+                    newenv = f"{env}.{i}"
+                if isinstance(o[i], dict) or isinstance(o[i], list):
+                    item = map_flatten(o[i], newenv)
+                else:
+                    item = {newenv: o[i]}
+                flattened = {**flattened, **item}
+            return flattened
+        else:
+            return o
+
+
+def map_join(d, atts, sep=" "):
+    return sep.join([str(x) for x in map_attributes(d, atts)])
+
+
+def merge_join(d, attr, atts, sep=" "):
+    item = {
+        attr: map_join(d, atts, sep),
+    }
+    return {**d, **item}
+
+
+def map_group(l, key_atts, group_att=None):
+    data_field = group_att or "data"
+    groups = {}
+    for x in l:
+        _key = tuple(map_attributes(x, key_atts))
+        if _key in groups:
+            cur_item = groups[_key]
+            cur_data = cur_item[data_field]
+        else:
+            cur_item = {}
+            cur_data = []
+        group_atts = select_attributes(x, key_atts)
+        if group_att is None:
+            groups[_key] = {
+                **cur_item,
+                **group_atts,
+                **{data_field: cur_data + [drop_attributes(x, key_atts)]},
+            }
+        else:
+            if group_att in x:
+                groups[_key] = {
+                    **cur_item,
+                    **group_atts,
+                    **{data_field: cur_data + [x[group_att]]},
+                }
+    return list(groups.values())
+
+
 class FilterModule(object):
     """jinja2 filters"""
 
@@ -225,4 +298,7 @@ class FilterModule(object):
             "to_safe_yaml": to_safe_yaml,
             "sorted_get": sorted_get,
             "ip_range": ip_range,
+            "map_flatten": map_flatten,
+            "map_join": map_join,
+            "merge_join": merge_join,
         }

@@ -29,6 +29,10 @@ from custom_filters import (  # noqa: E402
     map_attributes,
     sorted_get,
     ip_range,
+    map_flatten,
+    map_join,
+    merge_join,
+    map_group,
 )
 from custom_tests import test_network, test_property  # noqa: E402
 
@@ -272,10 +276,154 @@ def test_sorted_get():
     with pytest.raises(KeyError):
         sorted_get(d, ["na"])
     with pytest.raises(KeyError):
-
         sorted_get(d, ["na", "an"])
 
 
 def test_iprange():
     assert ip_range("8.8.8.8") == ["8.8.8.8"]
     assert ip_range("8.8.8.8-8.8.8.10") == ["8.8.8.8", "8.8.8.9", "8.8.8.10"]
+
+
+def test_map_flatten():
+    assert map_flatten({"a": 1}) == {
+        "a": 1,
+    }
+    assert map_flatten({"a": {"b": 1, "c": 2}}) == {
+        "a.b": 1,
+        "a.c": 2,
+    }
+    assert map_flatten({"a": ["b", "c"]}) == {
+        "a.0": "b",
+        "a.1": "c",
+    }
+    assert map_flatten({"a": [{"b": 1, "c": 2}, {"d": 3}], "e": ["f", "g"]}) == {
+        "a.0.b": 1,
+        "a.0.c": 2,
+        "a.1.d": 3,
+        "e.0": "f",
+        "e.1": "g",
+    }
+
+    with pytest.raises(ValueError):
+        map_flatten("a")
+
+    with pytest.raises(ValueError):
+        map_flatten(1)
+
+    with pytest.raises(ValueError):
+        map_flatten(["a", "b"])
+
+
+def test_map_join():
+    target = {
+        "a": 1,
+        "b": "hola",
+        "c": 2,
+        "d": "mundo",
+        "e": "chamo",
+    }
+
+    assert map_join(target, ["a"]) == "1"
+    assert map_join(target, ["b", "d"]) == "hola mundo"
+    assert map_join(target, ["d", "b"]) == "mundo hola"
+    assert map_join(target, ["b", "e"]) == "hola chamo"
+    assert map_join(target, ["e", "b"]) == "chamo hola"
+
+    assert map_join(target, ["a"], "") == "1"
+    assert map_join(target, ["b", "d"], "") == "holamundo"
+    assert map_join(target, ["d", "b"], "") == "mundohola"
+    assert map_join(target, ["b", "e"], "") == "holachamo"
+    assert map_join(target, ["e", "b"], "") == "chamohola"
+
+    assert map_join(target, ["a"], ",") == "1"
+    assert map_join(target, ["b", "d"], ",") == "hola,mundo"
+    assert map_join(target, ["d", "b"], ",") == "mundo,hola"
+    assert map_join(target, ["b", "e"], ",") == "hola,chamo"
+    assert map_join(target, ["e", "b"], ",") == "chamo,hola"
+
+    assert map_join(target, ["x"]) == ""
+
+
+def test_merge_join():
+    target = {
+        "a": 1,
+        "b": "hola",
+        "c": 2,
+        "d": "mundo",
+        "e": "chamo",
+        "join": "fail",
+    }
+
+    assert merge_join(target, "join", ["b", "d"]) == {
+        **target,
+        **{"join": "hola mundo"},
+    }
+    assert merge_join(target, "join", ["d", "b"]) == {
+        **target,
+        **{"join": "mundo hola"},
+    }
+    assert merge_join(target, "join", ["b", "e"]) == {
+        **target,
+        **{"join": "hola chamo"},
+    }
+    assert merge_join(target, "join", ["e", "b"]) == {
+        **target,
+        **{"join": "chamo hola"},
+    }
+
+
+def test_map_group():
+    target = [
+        {
+            "a": "uno",
+            "b": "one",
+            "c": "chamo",
+        },
+        {
+            "a": "uno",
+            "b": "one",
+            "c": "mae",
+        },
+        {
+            "a": "uno",
+            "b": "one",
+            "c": "pana",
+        },
+        {
+            "a": "dos",
+            "b": "two",
+            "c": "chama",
+        },
+    ]
+
+    assert map_group(target, ["a", "b"]) == [
+        {
+            "a": "uno",
+            "b": "one",
+            "data": [
+                {"c": "chamo"},
+                {"c": "mae"},
+                {"c": "pana"},
+            ],
+        },
+        {
+            "a": "dos",
+            "b": "two",
+            "data": [
+                {"c": "chama"},
+            ],
+        },
+    ]
+
+    assert map_group(target, ["a", "b"], "c") == [
+        {
+            "a": "uno",
+            "b": "one",
+            "c": ["chamo", "mae", "pana"],
+        },
+        {
+            "a": "dos",
+            "b": "two",
+            "c": ["chama"],
+        },
+    ]
