@@ -16,21 +16,23 @@ defaults:
 jobs:
 
   test:
-    name:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the codebase.
+      - name: check out the codebase
         uses: actions/checkout@v2
         with:
           path: 'nephelaiio.plugins'
 
-      - name: Set up Python 3.
+      - name: set up python 3
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-      - name: Install test dependencies.
+      - name: install test dependencies
         run: pip3 install poetry
 
-      - name: Test code.
+      - name: install poetry
+        run: poetry install
+
+      - name: test code
         run: make
