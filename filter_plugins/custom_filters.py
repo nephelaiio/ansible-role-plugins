@@ -4,6 +4,7 @@ import itertools
 import yaml
 import sys
 import netaddr
+import functools
 
 if sys.version_info[0] < 3:
     from collections import Sequence, defaultdict
@@ -270,6 +271,14 @@ def map_group(l, key_atts, group_att=None):
     return list(groups.values())
 
 
+def is_any_true(xs):
+    functools.reduce(lambda x, y: x or y, map(lambda x: bool(x), xs))
+
+
+def is_all_true(xs):
+    functools.reduce(lambda x, y: x and y, map(lambda x: bool(x), xs))
+
+
 class FilterModule(object):
     """jinja2 filters"""
 
@@ -302,4 +311,6 @@ class FilterModule(object):
             "map_join": map_join,
             "merge_join": merge_join,
             "map_group": map_group,
+            "is_any_true": is_any_true,
+            "is_all_true": is_all_true,
         }

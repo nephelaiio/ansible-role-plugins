@@ -427,3 +427,27 @@ def test_map_group():
             "c": ["chama"],
         },
     ]
+
+def test_is_any_true():
+    assert is_any_true(['a']) == True
+    assert is_any_true(['']) == False
+    assert is_any_true(['', 'a']) == True
+    assert is_any_true(['a', '']) == True
+    assert is_any_true(['a', 'b']) == True
+    assert is_any_true([1]) == True
+    assert is_any_true([0]) == False
+    assert is_any_true([0, 1]) == True
+    assert is_any_true([1, 0]) == True
+    assert is_any_true([1, 2]) == True
+
+def test_is_all_true():
+    assert is_all_true(['a']) == True
+    assert is_all_true(['']) == False
+    assert is_all_true(['', 'a']) == False
+    assert is_all_true(['a', '']) == False
+    assert is_all_true(['a', 'b']) == True
+    assert is_all_true([1]) == True
+    assert is_all_true([0]) == False
+    assert is_all_true([0, 1]) == False
+    assert is_all_true([1, 0]) == False
+    assert is_all_true([1, 2]) == True
