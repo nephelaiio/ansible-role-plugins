@@ -272,11 +272,11 @@ def map_group(l, key_atts, group_att=None):
 
 
 def is_any_true(xs):
-    functools.reduce(lambda x, y: x or y, map(lambda x: bool(x), xs))
+    return functools.reduce(lambda x, y: x or y, map(lambda x: bool(x), xs), False)
 
 
 def is_all_true(xs):
-    functools.reduce(lambda x, y: x and y, map(lambda x: bool(x), xs))
+    return functools.reduce(lambda x, y: x and y, map(lambda x: bool(x), xs), True)
 
 
 class FilterModule(object):
