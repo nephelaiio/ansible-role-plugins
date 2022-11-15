@@ -1,6 +1,6 @@
 # nephelaiio.plugins
 
-[![Build Status](https://github.com/nephelaiio/ansible-role-plugins/workflows/CI/badge.svg)](https://github.com/nephelaiio/ansible-role-plugins/actions)
+[![Build Status](https://github.com/nephelaiio/ansible-role-plugins/workflows/pytest/badge.svg)](https://github.com/nephelaiio/ansible-role-plugins/actions)
 [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.plugins-blue.svg)](https://galaxy.ansible.com/nephelaiio/plugins/)
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/plugins) for custom plugins definitions

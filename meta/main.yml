@@ -14,10 +14,10 @@ galaxy_info:
         - all
     - name: Ubuntu
       versions:
-        - xenial
+        - all
     - name: Debian
       versions:
-        - stretch
+        - all
   galaxy_tags:
     - plugins
 

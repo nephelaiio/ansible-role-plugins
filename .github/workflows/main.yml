@@ -1,5 +1,5 @@
 ---
-name: CI
+name: pytest
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ defaults:
 
 jobs:
 
-  test:
+  pytest:
     runs-on: ubuntu-latest
     steps:
       - name: check out the codebase
