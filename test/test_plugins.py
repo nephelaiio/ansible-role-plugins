@@ -33,6 +33,8 @@ from custom_filters import (  # noqa: E402
     map_join,
     merge_join,
     map_group,
+    is_any_true,
+    is_all_true
 )
 from custom_tests import test_network, test_property  # noqa: E402
 
