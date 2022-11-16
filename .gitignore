@@ -8,3 +8,4 @@ playbook.retry
 **/*.pyc
 .pytest_cache/
 .python-version
+.venv/
