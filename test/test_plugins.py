@@ -34,7 +34,8 @@ from custom_filters import (  # noqa: E402
     merge_join,
     map_group,
     is_any_true,
-    is_all_true
+    is_all_true,
+    search_regex
 )
 from custom_tests import test_network, test_property  # noqa: E402
 
@@ -453,3 +454,13 @@ def test_is_all_true():
     assert is_all_true([0, 1]) == False
     assert is_all_true([1, 0]) == False
     assert is_all_true([1, 2]) == True
+
+def test_search_regex():
+    assert search_regex('^$', '') == True
+    assert search_regex('^[a-z]$', '') == False
+    assert search_regex('^[a-z]$', 'a') == True
+    assert search_regex('^m', 'match') == True
+    assert search_regex('^h', 'match') == False
+    assert search_regex('^a.*', 'abcd') == True
+    assert search_regex('^.*bc.*', 'abcd') == True
+    assert search_regex('^.*bc.*', 'abCd') == False

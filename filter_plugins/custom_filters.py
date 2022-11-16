@@ -5,6 +5,7 @@ import yaml
 import sys
 import netaddr
 import functools
+import re
 
 if sys.version_info[0] < 3:
     from collections import Sequence, defaultdict
@@ -279,6 +280,10 @@ def is_all_true(xs):
     return functools.reduce(lambda x, y: x and y, map(lambda x: bool(x), xs), True)
 
 
+def search_regex(r, s):
+    return bool(re.match(r, s))
+
+
 class FilterModule(object):
     """jinja2 filters"""
 
@@ -313,4 +318,5 @@ class FilterModule(object):
             "map_group": map_group,
             "is_any_true": is_any_true,
             "is_all_true": is_all_true,
+            "search_regex": search_regex,
         }
