@@ -1,4 +1,4 @@
-from markupsafe import soft_unicode
+from markupsafe import soft_str
 import copy
 import itertools
 import yaml
@@ -49,7 +49,7 @@ def map_format(value, pattern):
         result = dict([[k, map_format(v, p[k])] for k, v in value.items()])
     else:
         try:
-            result = soft_unicode(pattern) % value
+            result = soft_str(pattern) % value
         except TypeError:
             result = pattern
     return result
